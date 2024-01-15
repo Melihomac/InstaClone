@@ -1,118 +1,84 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {Image} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Home from './src/screens/Home/Home';
+import Search from './src/screens/Search/Search';
+import HomeLogo from './src/components/LogoComponent/HomeLogo';
+import Profile from './src/screens/Profile/Profile';
+import HeartIcon from './src/components/HeartIcon/HeartIcon';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Tab = createBottomTabNavigator();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const App = ({navigation}: any) => {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={() => ({
+          tabBarHideOnKeyboard: true,
+          tabBarStyle: {
+            padding: 10,
           },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+        })}>
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={({route}) => ({
+            headerLeft: () => <HomeLogo />,
+            headerRight: () => <HeartIcon />,
+            // eslint-disable-next-line react/no-unstable-nested-components
+            tabBarIcon: ({focused, color, size}) => {
+              let iconSource;
+              if (route.name === 'Home') {
+                iconSource = focused;
+                require('./src/assets/images/homeicon.png');
+              }
+              return (
+                <Image
+                  source={require('./src/assets/images/homeicon2.png')}
+                  style={{width: size, height: size, tintColor: color}}
+                />
+              );
+            },
+            title: '',
+          })}
+        />
+        <Tab.Screen
+          name="Search"
+          component={Search}
+          options={({route}) => ({
+            headerShown: false,
+            // eslint-disable-next-line react/no-unstable-nested-components
+            tabBarIcon: ({focused, color, size}) => {
+              if (route.name === 'Search') {
+                focused;
+                require('./src/assets/images/searchicon.png');
+              }
+              return (
+                <Image
+                  source={require('./src/assets/images/searchicon2.png')}
+                  style={{width: size, height: size, tintColor: color}}
+                />
+              );
+            },
+            title: '',
+          })}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={({route}) => ({
+            headerLeft: () => <HomeLogo />,
+            // eslint-disable-next-line react/no-unstable-nested-components
+            tabBarIcon: () => (
+              <Image source={require('./src/assets/images/profilephoto.png')} />
+            ),
+            title: '',
+          })}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
